@@ -1,0 +1,12 @@
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\bin\Debug\Regulus.Project.Chat.Common.dll
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\bin\Debug\Regulus.Project.Chat.Common.pdb
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\bin\Debug\protobuf-net.dll
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\bin\Debug\RegulusLibrary.dll
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\bin\Debug\RegulusRemoting.dll
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\bin\Debug\protobuf-net.xml
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\bin\Debug\RegulusLibrary.pdb
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\bin\Debug\RegulusLibrary.xml
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\bin\Debug\RegulusRemoting.pdb
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\bin\Debug\RegulusRemoting.xml
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\obj\Debug\Regulus.Project.Chat.Common.dll
+D:\Develop\Chat\Chat\Regulus.Project.Chat.Common\obj\Debug\Regulus.Project.Chat.Common.pdb
