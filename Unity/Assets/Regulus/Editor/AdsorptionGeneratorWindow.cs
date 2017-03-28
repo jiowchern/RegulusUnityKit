@@ -12,12 +12,17 @@ using Microsoft.CSharp;
 public class AdsorptionGeneratorWindow : EditorWindow {
     
     private string _OutputPath;
-    private string _Namespace;
+    private string[] _Namespaces;
+    private int _NamespaceIndex;
+    private string _InputPath;
+    private Assembly _Assembly;
 
     public AdsorptionGeneratorWindow()
     {
-        _Namespace = string.Empty;
+        _Namespaces = new string[0];
+        _NamespaceIndex = 0;
         _OutputPath = string.Empty;
+        _InputPath = String.Empty;
     }
 
     [MenuItem("Regulus/Tool/AdsorptionGenerator")]
@@ -26,16 +31,26 @@ public class AdsorptionGeneratorWindow : EditorWindow {
         var wnd = EditorWindow.GetWindow<AdsorptionGeneratorWindow>();
         wnd.Show();
     }
+  
 
     public void OnGUI()
     {
         
-
         EditorGUILayout.BeginVertical();
 
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Catch namespace");
-        _Namespace = EditorGUILayout.TextField(_Namespace);
+        EditorGUILayout.LabelField(_InputPath);
+        if (GUILayout.Button("Open"))
+        {            
+            _InputPath = EditorUtility.OpenFilePanelWithFilters("Select DLL", Application.dataPath,new [] {"dll","dll"});
+            _Assembly = Assembly.LoadFile(_InputPath);
+            var namesapces = new HashSet<string>(from type in _Assembly.GetTypes() select type.Namespace);
+            _Namespaces = namesapces.ToArray();
+        }
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        _NamespaceIndex = EditorGUILayout.Popup("Namespace", _NamespaceIndex, _Namespaces);       
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
@@ -46,9 +61,9 @@ public class AdsorptionGeneratorWindow : EditorWindow {
         }
         EditorGUILayout.EndHorizontal();
 
-        if (GUILayout.Button("Generate"))
+        if (_NamespaceIndex < _Namespaces.Length && GUILayout.Button("Generate") )
         {
-            _Generate();
+            _Generate(_Assembly);
         }
 
         EditorGUILayout.EndVertical();
@@ -56,32 +71,36 @@ public class AdsorptionGeneratorWindow : EditorWindow {
 
     }
 
-    private void _Generate()
+    private void _Generate(Assembly assembly)
     {
-        foreach (var type in _GetTypes())
+        foreach (var type in _GetTypes(assembly))
         {
             if (type.IsInterface)
             {
                 
                 var code = string.Format(
                     @"                    
-namespace {0}.Adsorber
+namespace {0}.Adsorption
 {{
     
-    public class Adsorber{1} : Regulus.Remoting.Unity.Adsorber<{1}>
+    public class {7}Adsorber : Regulus.Remoting.Unity.Adsorber<{1}>
     {{
         [System.Serializable]
         public class UnityEnableEvent : UnityEngine.Events.UnityEvent<bool> {{}}
         public UnityEnableEvent EnableEvent;
-        {1} _{1};                        
-        public Adsorber{1}()
+        {1} _{7};                        
+        public {7}Adsorber()
         {{
                                 
         }}
 
+        public override {1} GetGPI()
+        {{
+            return _{7};
+        }}
         public override void Supply({1} gpi)
         {{
-            _{1} = gpi;
+            _{7} = gpi;
             {5}
             EnableEvent.Invoke(true);
         }}
@@ -90,18 +109,23 @@ namespace {0}.Adsorber
         {{
             EnableEvent.Invoke(false);
             {6}
-            _{1} = null;
+            _{7} = null;
         }}
         {2}
         {3}
         {4}
     }}
 }}
-                    ", _Namespace , type.Name , _GenerateMethods(type) , _GenerateReturnEvents(type) , _GenerateEvents(type) , _GetBindEvents(type , "+=") , _GetBindEvents(type , "-="));
-
-                System.IO.File.WriteAllText(_OutputPath+"\\" + "Adsorber" + type.Name+".cs" , code );
+                    ", _Namespaces[_NamespaceIndex], type.Name , _GenerateMethods(type) , _GenerateReturnEvents(type) , _GenerateEvents(type) , _GetBindEvents(type , "+=") , _GetBindEvents(type , "-=") , _GetClassName(type.Name));
+                System.IO.File.WriteAllText(_OutputPath+"\\" + _GetClassName(type.Name) + "Adsorber" + ".cs" , code );
             }
         }
+    }
+
+    private string _GetClassName(string type_name)
+    {
+        var className = new string(type_name.Skip(1).ToArray());
+        return className;
     }
 
     private object _GetBindEvents(Type type, string op_code)
@@ -117,7 +141,7 @@ namespace {0}.Adsorber
     private string _GetBindEvent(Type type,EventInfo event_info, string op_code)
     {
         
-        return string.Format("_{0}.{1} {2} _On{1};" , type.Name , event_info.Name , op_code);
+        return string.Format("_{0}.{1} {2} _On{1};" , _GetClassName(type.Name) , event_info.Name , op_code);
     }
 
     private string _GenerateReturnEvents(Type type)
@@ -141,15 +165,14 @@ namespace {0}.Adsorber
 
         return string.Join("\n", codes.ToArray());
     }
-
+    
     private string _GenerateMethodReturnEvent(MethodInfo method_info)
     {
         var genericArguments = method_info.ReturnType.GetGenericArguments();
-        var argTypes  = AdsorptionGeneratorWindow._GetArgTypes(genericArguments);
-
+        var argTypes  = AdsorptionGeneratorWindow._GetArgTypes(genericArguments);        
         string code = String.Format(@"
         [System.Serializable]
-        public class Unity{0}Result : UnityEngine.Events.UnityEvent<{1}> {{ }}
+        public class Unity{0}Result : UnityEngine.Events.UnityEvent{1} {{ }}
         public Unity{0}Result {0}Result;
         ", method_info.Name , argTypes);
         return code;
@@ -167,7 +190,9 @@ namespace {0}.Adsorber
     }
     private static string _GetArgTypes(Type[] generic_arguments)
     {
-        return string.Join(",", (from arg in generic_arguments select arg.ToString()).ToArray());
+        if(generic_arguments.Any())
+            return "<" + string.Join(",", (from arg in generic_arguments select arg.ToString()).ToArray())+ ">";
+        return String.Empty;
     }
 
     private string _GenerateEvents(Type type)
@@ -191,7 +216,7 @@ namespace {0}.Adsorber
         string code = String.Format(@"        
         private void _On{0}({1})
         {{
-            MessageEvent.Invoke({2});
+            {0}.Invoke({2});
         }}
         ", event_info.Name, argDefines , argNames);
         return code;
@@ -216,7 +241,7 @@ namespace {0}.Adsorber
 
         string code = String.Format(@"
         [System.Serializable]
-        public class Unity{0} : UnityEngine.Events.UnityEvent<{1}> {{ }}
+        public class Unity{0} : UnityEngine.Events.UnityEvent{1} {{ }}
         public Unity{0} {0};
         ", event_info.Name, argTypes);
         return code;
@@ -255,12 +280,12 @@ namespace {0}.Adsorber
             {{
                 _{2}.{0}({3});
             }}
-        }}", method_info.Name, _GetParamsDefine(method_info), type.Name, _GetParams(method_info));
+        }}", method_info.Name, _GetParamsDefine(method_info), _GetClassName(type.Name), _GetParams(method_info));
         return code;
     }
 
     private string _GenerateMethodHaveReturn(Type type, MethodInfo method_info)
-    {
+    {        
         string code = string.Format(@"
         public void {0}({1})
         {{
@@ -268,7 +293,7 @@ namespace {0}.Adsorber
             {{
                 _{2}.{0}({3}).OnValue += ( result ) =>{{ {0}Result.Invoke(result);}};
             }}
-        }}" , method_info.Name , _GetParamsDefine(method_info) , type.Name , _GetParams(method_info) );
+        }}" , method_info.Name , _GetParamsDefine(method_info) , _GetClassName(type.Name) , _GetParams(method_info) );
 
         return code;
     }
@@ -293,19 +318,14 @@ namespace {0}.Adsorber
         return String.Join(",", args.ToArray());
     }
 
-    private IEnumerable<Type> _GetTypes()
+    private IEnumerable<Type> _GetTypes(Assembly assembly)
     {
-        var assembles = AppDomain.CurrentDomain.GetAssemblies();
-
-        foreach (var assemble in assembles)
+        var types = assembly.GetTypes();
+        foreach (var type in types)
         {
-            var types = assemble.GetTypes();
-            foreach (var type in types)
+            if (type.Namespace == _Namespaces[_NamespaceIndex])
             {
-                if (type.Namespace == _Namespace)
-                {
-                    yield return type;
-                }
+                yield return type;
             }
         }
     }

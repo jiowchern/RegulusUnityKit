@@ -10,7 +10,7 @@ namespace Regulus.Remoting.Unity
 
     public abstract class Adsorber<T> : MonoBehaviour
     {
-        private readonly Regulus.Utility.StageMachine _Machine;
+        private readonly Regulus.Utility.StageMachine _Machine;        
         public string LinkTag;
 
         private Distributor _Distributor;
@@ -27,7 +27,6 @@ namespace Regulus.Remoting.Unity
 
         private void _ScanUpdate()
         {
-            
             var obj = GameObject.FindGameObjectWithTag(LinkTag);
             if (obj != null)
             {
@@ -72,6 +71,8 @@ namespace Regulus.Remoting.Unity
 
 
         public abstract void Unsupply(T gpi);
+
+        public abstract T GetGPI();
     }
 
 

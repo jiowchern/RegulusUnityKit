@@ -34,6 +34,11 @@ namespace Regulus.Remoting.Unity
             {
                 UnsupplyCount++;
             }
+
+            public override IGPI GetGPI()
+            {
+                return null;
+            }
         }
 
         public class TestNotifier<T> : Regulus.Remoting.INotifier<T>
@@ -211,6 +216,38 @@ namespace Regulus.Remoting.Unity
             Assert.AreEqual(2, testAdsorber1.SupplyCount);
             Assert.AreEqual(2, testAdsorber1.UnsupplyCount);
             
+        }
+
+        [Test]
+        public void Register7()
+        {
+            var gpi = new GPI();
+            var testNotifier = new TestNotifier<IGPI>();
+            var assigner = new Assigner<IGPI>(testNotifier);            
+            testNotifier.Add(gpi);
+
+            var obj1 = new UnityEngine.GameObject();
+            var testAdsorber1 = obj1.AddComponent<TestAdsorber>();
+
+
+            assigner.Register(testAdsorber1);
+            assigner.Unregister(testAdsorber1);
+
+            var obj2 = new UnityEngine.GameObject();
+            var testAdsorber2 = obj2.AddComponent<TestAdsorber>();
+
+
+            assigner.Register(testAdsorber2);
+            assigner.Unregister(testAdsorber2);
+
+
+            testNotifier.Remove(gpi);
+
+            Assert.AreEqual(1, testAdsorber1.SupplyCount);
+            Assert.AreEqual(1, testAdsorber1.UnsupplyCount);
+            Assert.AreEqual(1, testAdsorber2.SupplyCount);
+            Assert.AreEqual(1, testAdsorber2.UnsupplyCount);
+
         }
 
     }

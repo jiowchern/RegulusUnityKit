@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="IAccount.cs" />
     <Compile Include="ITalker.cs" />
+    <Compile Include="ITest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

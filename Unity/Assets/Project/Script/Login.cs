@@ -5,11 +5,11 @@ using UnityEngine;
 public class Login : MonoBehaviour {
 
     public UnityEngine.UI.Text Name;
-    public Regulus.Project.Chat.Common.Adsorber.AdsorberIAccount Account;
+    //public Regulus.Project.Chat.Common.Adsorption.IAccountAdsorber Account;
 	
     public void Verify()
     {
-        Account.Login(Name.text);
+        //Account.Login(Name.text);
         
     }
 	

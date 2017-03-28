@@ -5,9 +5,9 @@ using UnityEngine;
 public class Sender : MonoBehaviour {
 
     public UnityEngine.UI.Text Message;
-    public Regulus.Project.Chat.Common.Adsorber.AdsorberITalker Talker;
+    //public Regulus.Project.Chat.Common.Adsorption.ITalkerAdsorber Talker;
 	public void Send()
     {
-        Talker.Talk(Message.text);
+        //Talker.Talk(Message.text);
     }
 }
