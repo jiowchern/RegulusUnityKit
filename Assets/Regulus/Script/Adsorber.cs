@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 using Regulus.Utility;
 
 using UnityEngine;
@@ -11,7 +11,8 @@ namespace Regulus.Remoting.Unity
     public abstract class Adsorber<T> : MonoBehaviour
     {
         private readonly Regulus.Utility.StageMachine _Machine;        
-        public string LinkTag;
+        
+        public string Distributor;
 
         private Distributor _Distributor;
 
@@ -27,13 +28,12 @@ namespace Regulus.Remoting.Unity
 
         private void _ScanUpdate()
         {
-            var obj = GameObject.FindGameObjectWithTag(LinkTag);
-            if (obj != null)
+            var distributors = GameObject.FindObjectsOfType<Distributor>();
+            _Distributor = distributors.FirstOrDefault(d => string.IsNullOrEmpty(d.Name) == false && d.Name == Distributor);
+            if(_Distributor != null)
             {
-
-                _Distributor = obj.GetComponent<Distributor>();
                 _Machine.Push(new Regulus.Utility.SimpleStage(_DispatchEnter, _DispatchLeave));
-            }
+            }            
         }
 
         private void _DispatchEnter()

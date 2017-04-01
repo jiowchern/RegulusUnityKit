@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Login : MonoBehaviour {
 
-    public UnityEngine.UI.Text Name;
-    public Regulus.Project.Chat.Common.Adsorption.AccountAdsorber Account;
+	public UnityEngine.UI.Text Name;
+	public Regulus.Project.Chat.Common.Adsorption.AccountAdsorber Account;
 	
-    public void Verify()
-    {
-        Account.Login(Name.text);
-        
-    }
+	public void Verify()
+	{
+		Account.Login(Name.text);
+		
+	}
 	
 }

@@ -7,6 +7,9 @@ namespace Regulus.Project.Chat.Common.Adsorption
         [System.Serializable]
         public class UnityEnableEvent : UnityEngine.Events.UnityEvent<bool> {}
         public UnityEnableEvent EnableEvent;
+        [System.Serializable]
+        public class UnitySupplyEvent : UnityEngine.Events.UnityEvent<IAccount> {}
+        public UnitySupplyEvent SupplyEvent;
         IAccount _Account;                        
         public AccountAdsorber()
         {
@@ -22,6 +25,7 @@ namespace Regulus.Project.Chat.Common.Adsorption
             _Account = gpi;
             
             EnableEvent.Invoke(true);
+            SupplyEvent.Invoke(gpi);
         }
 
         public override void Unsupply(IAccount gpi)

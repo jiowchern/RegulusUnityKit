@@ -10,7 +10,7 @@ namespace Regulus.Remoting.Unity
 {
     public abstract class Distributor : MonoBehaviour
     {
-        
+        public string Name;
 
         private readonly Dictionary<int, Assigner> _Notifiers;
 
@@ -19,7 +19,7 @@ namespace Regulus.Remoting.Unity
             _Notifiers = new Dictionary<int, Assigner>();
         }
 
-        protected abstract IAgent _GetAgent();        
+        internal abstract IAgent _GetAgent();        
         public void Attach<T>(Adsorber<T> adsorber)
         {
             var notifier = _GetAgent().QueryNotifier<T>();

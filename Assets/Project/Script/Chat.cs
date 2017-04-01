@@ -24,13 +24,19 @@ public class Chat : MonoBehaviour
 		text.text = talker_name + ":" + message;
 	}
 
-	public void Send(string message)
+	public void Join(string talker_name)
 	{
 		var text = _CreateItem();
-		text.text = message;
+		text.text = string.Format("{0} join room.",talker_name);
 	}
 
-	private Text _CreateItem()
+    public void Leave(string talker_name)
+    {
+        var text = _CreateItem();
+        text.text = string.Format("{0} leave room.", talker_name);
+    }
+
+    private Text _CreateItem()
 	{
 		var obj = Object.Instantiate(ItemPrefab, Root);
 		return obj.GetComponent<UnityEngine.UI.Text>();

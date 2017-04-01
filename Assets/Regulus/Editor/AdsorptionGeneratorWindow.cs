@@ -16,6 +16,7 @@ public class AdsorptionGeneratorWindow : EditorWindow {
     private int _NamespaceIndex;
     private string _InputPath;
     private Assembly _Assembly;
+    
 
     public AdsorptionGeneratorWindow()
     {
@@ -43,6 +44,7 @@ public class AdsorptionGeneratorWindow : EditorWindow {
         if (GUILayout.Button("Open"))
         {            
             _InputPath = EditorUtility.OpenFilePanelWithFilters("Select DLL", Application.dataPath,new [] {"dll","dll"});
+            
             _Assembly = Assembly.LoadFile(_InputPath);
             var namesapces = new HashSet<string>(from type in _Assembly.GetTypes() select type.Namespace);
             _Namespaces = namesapces.ToArray();
@@ -63,7 +65,23 @@ public class AdsorptionGeneratorWindow : EditorWindow {
 
         if (_NamespaceIndex < _Namespaces.Length && GUILayout.Button("Generate") )
         {
-            _Generate(_Assembly);
+            EditorApplication.LockReloadAssemblies();
+            try
+            {
+                _Generate(_Assembly);                  
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                EditorApplication.UnlockReloadAssemblies();
+            }
+            AssetDatabase.Refresh();
+            Debug.Log("done.");
+
+            _CollectMissing();
         }
 
         EditorGUILayout.EndVertical();
@@ -71,15 +89,25 @@ public class AdsorptionGeneratorWindow : EditorWindow {
 
     }
 
+    private void _CollectMissing()
+    {
+        //AppDomain.CurrentDomain.GetAssemblies();
+    }
+
     private void _Generate(Assembly assembly)
     {
         foreach (var type in _GetTypes(assembly))
         {
-            if (type.IsInterface)
-            {
-                
-                var code = string.Format(
-                    @"                    
+            _BuildCode(type);
+        }
+    }
+
+    
+
+    private void _BuildCode(Type type)
+    {
+        var code = string.Format(
+            @"                    
 namespace {0}.Adsorption
 {{
     
@@ -88,6 +116,9 @@ namespace {0}.Adsorption
         [System.Serializable]
         public class UnityEnableEvent : UnityEngine.Events.UnityEvent<bool> {{}}
         public UnityEnableEvent EnableEvent;
+        [System.Serializable]
+        public class UnitySupplyEvent : UnityEngine.Events.UnityEvent<{1}> {{}}
+        public UnitySupplyEvent SupplyEvent;
         {1} _{7};                        
         public {7}Adsorber()
         {{
@@ -103,6 +134,7 @@ namespace {0}.Adsorption
             _{7} = gpi;
             {5}
             EnableEvent.Invoke(true);
+            SupplyEvent.Invoke(gpi);
         }}
 
         public override void Unsupply({1} gpi)
@@ -116,10 +148,9 @@ namespace {0}.Adsorption
         {4}
     }}
 }}
-                    ", _Namespaces[_NamespaceIndex], type.Name , _GenerateMethods(type) , _GenerateReturnEvents(type) , _GenerateEvents(type) , _GetBindEvents(type , "+=") , _GetBindEvents(type , "-=") , _GetClassName(type.Name));
-                System.IO.File.WriteAllText(_OutputPath+"\\" + _GetClassName(type.Name) + "Adsorber" + ".cs" , code );
-            }
-        }
+                    ", _Namespaces[_NamespaceIndex], type.Name, _GenerateMethods(type), _GenerateReturnEvents(type),
+            _GenerateEvents(type), _GetBindEvents(type, "+="), _GetBindEvents(type, "-="), _GetClassName(type.Name));
+        System.IO.File.WriteAllText(_OutputPath + "\\" + _GetClassName(type.Name) + "Adsorber" + ".cs", code);
     }
 
     private string _GetClassName(string type_name)
@@ -323,7 +354,7 @@ namespace {0}.Adsorption
         var types = assembly.GetTypes();
         foreach (var type in types)
         {
-            if (type.Namespace == _Namespaces[_NamespaceIndex])
+            if (type.IsInterface && type.Namespace == _Namespaces[_NamespaceIndex])
             {
                 yield return type;
             }

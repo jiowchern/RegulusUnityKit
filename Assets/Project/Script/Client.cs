@@ -37,7 +37,7 @@ public class Client : Regulus.Remoting.Unity.Distributor
         }
     }
 
-    protected override IAgent _GetAgent()
+    internal override IAgent _GetAgent()
     {
         return _Agent;        
     }
