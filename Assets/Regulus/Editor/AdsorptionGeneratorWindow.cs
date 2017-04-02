@@ -98,13 +98,17 @@ public class AdsorptionGeneratorWindow : EditorWindow {
     {
         foreach (var type in _GetTypes(assembly))
         {
-            _BuildCode(type);
+            _BuildAdsorberCode(type);
+            _BuildInspectorCode(type);
         }
     }
 
-    
+    private void _BuildInspectorCode(Type type)
+    {
+        
+    }
 
-    private void _BuildCode(Type type)
+    private void _BuildAdsorberCode(Type type)
     {
         var code = string.Format(
             @"                    

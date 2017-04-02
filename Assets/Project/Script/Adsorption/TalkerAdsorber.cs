@@ -1,4 +1,6 @@
                     
+using UnityEngine.Events;
+
 namespace Regulus.Project.Chat.Common.Adsorption
 {
     
@@ -44,9 +46,22 @@ namespace Regulus.Project.Chat.Common.Adsorption
         
         private void _OnMessageEvent(System.String arg0)
         {
+            
+
             MessageEvent.Invoke(arg0);
         }
-        
+
+
+        [System.Serializable]
+        public class UnityTestEvent : UnityEngine.Events.UnityEvent { }
+        public UnityTestEvent TestEvent;
+
+
+        private void _OnTestEvent()
+        {
+            
+        }
+
     }
 }
                     
