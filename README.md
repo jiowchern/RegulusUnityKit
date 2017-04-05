@@ -7,4 +7,4 @@
 2.開啟Unity Project (本資料夾)  
 3.在Unity執行 Assets/copy_protocol_debug.cmd  
 4.在Unity執行 Assets/run_server.cmd  
-5.Play ChatRoom.unity  
+5.在UnityPlay ChatRoom.unity  
