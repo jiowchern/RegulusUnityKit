@@ -72,6 +72,7 @@ public class AdsorptionGeneratorWindow : EditorWindow {
             }
             catch (Exception e)
             {
+                Debug.Log(e);
                 throw e;
             }
             finally
@@ -79,8 +80,7 @@ public class AdsorptionGeneratorWindow : EditorWindow {
                 EditorApplication.UnlockReloadAssemblies();
             }
             AssetDatabase.Refresh();
-            Debug.Log("done.");
-
+            
             _CollectMissing();
         }
 
@@ -91,7 +91,7 @@ public class AdsorptionGeneratorWindow : EditorWindow {
 
     private void _CollectMissing()
     {
-        //AppDomain.CurrentDomain.GetAssemblies();
+        
     }
 
     private void _Generate(Assembly assembly)
@@ -123,7 +123,7 @@ namespace {0}.Adsorption
         [System.Serializable]
         public class UnitySupplyEvent : UnityEngine.Events.UnityEvent<{1}> {{}}
         public UnitySupplyEvent SupplyEvent;
-        {1} _{7};                        
+        {1} _GPI;                        
         public {7}Adsorber()
         {{
                                 
@@ -131,11 +131,11 @@ namespace {0}.Adsorption
 
         public override {1} GetGPI()
         {{
-            return _{7};
+            return _GPI;
         }}
         public override void Supply({1} gpi)
         {{
-            _{7} = gpi;
+            _GPI = gpi;
             {5}
             EnableEvent.Invoke(true);
             SupplyEvent.Invoke(gpi);
@@ -145,7 +145,7 @@ namespace {0}.Adsorption
         {{
             EnableEvent.Invoke(false);
             {6}
-            _{7} = null;
+            _GPI = null;
         }}
         {2}
         {3}
