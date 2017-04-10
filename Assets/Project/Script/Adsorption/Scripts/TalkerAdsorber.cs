@@ -1,9 +1,8 @@
                     
-using UnityEngine.Events;
 
 namespace Regulus.Project.Chat.Common.Adsorption
 {
-    
+    [UnityEngine.AddComponentMenu("RegulusAdsorbers/ITalker(Adsorber)")]
     public class TalkerAdsorber : Regulus.Remoting.Unity.Adsorber<ITalker>
     {
         [System.Serializable]
@@ -11,12 +10,9 @@ namespace Regulus.Project.Chat.Common.Adsorption
         public UnityEnableEvent EnableEvent;
         [System.Serializable]
         public class UnitySupplyEvent : UnityEngine.Events.UnityEvent<ITalker> {}
-        public UnitySupplyEvent SupplyEvent;
+        public UnitySupplyEvent ReadyEvent;
         ITalker _Talker;                        
-        public TalkerAdsorber()
-        {
-                                
-        }
+       
 
         public override ITalker GetGPI()
         {
@@ -27,7 +23,7 @@ namespace Regulus.Project.Chat.Common.Adsorption
             _Talker = gpi;
             _Talker.MessageEvent += _OnMessageEvent;
             EnableEvent.Invoke(true);
-            SupplyEvent.Invoke(gpi);
+            ReadyEvent.Invoke(gpi);
         }
 
         public override void Unsupply(ITalker gpi)
@@ -46,22 +42,9 @@ namespace Regulus.Project.Chat.Common.Adsorption
         
         private void _OnMessageEvent(System.String arg0)
         {
-            
-
             MessageEvent.Invoke(arg0);
         }
-
-
-        [System.Serializable]
-        public class UnityTestEvent : UnityEngine.Events.UnityEvent { }
-        public UnityTestEvent TestEvent;
-
-
-        private void _OnTestEvent()
-        {
-            
-        }
-
+        
     }
 }
                     

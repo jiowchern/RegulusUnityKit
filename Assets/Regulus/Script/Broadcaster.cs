@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using Regulus.Utility;
 
@@ -37,13 +38,13 @@ namespace Regulus.Remoting.Unity
 
         private void _ScaneUpdate()
         {
-            var distributor = GameObject.FindObjectOfType<Distributor>();
-            if (distributor != null && distributor.Name == Distributor)
+            var distributors = GameObject.FindObjectsOfType<Distributor>();
+            var distributor = distributors.FirstOrDefault(d => d.Name == Distributor);
+            if (distributor != null)
             {
                 _Notifier = distributor._GetAgent().QueryNotifier<T>();
 
-                _ToInitial();                
-                
+                _ToInitial();                                
             }
         }
 

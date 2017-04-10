@@ -50,7 +50,7 @@ public class Client : Regulus.Remoting.Unity.Distributor
 
 	private void _ConnectResult(bool success)
 	{
-		//ConnectUI.SetActive(!success);
+		ConnectUI.SetActive(!success);
 	}
 
 	// Update is called once per frame

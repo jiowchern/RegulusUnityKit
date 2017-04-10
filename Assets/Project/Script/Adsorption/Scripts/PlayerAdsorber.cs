@@ -1,7 +1,8 @@
                     
+
 namespace Regulus.Project.Chat.Common.Adsorption
 {
-    
+    [UnityEngine.AddComponentMenu("RegulusAdsorbers/IPlayer(Adsorber)")]
     public class PlayerAdsorber : Regulus.Remoting.Unity.Adsorber<IPlayer>
     {
         [System.Serializable]
@@ -9,12 +10,9 @@ namespace Regulus.Project.Chat.Common.Adsorption
         public UnityEnableEvent EnableEvent;
         [System.Serializable]
         public class UnitySupplyEvent : UnityEngine.Events.UnityEvent<IPlayer> {}
-        public UnitySupplyEvent SupplyEvent;
+        public UnitySupplyEvent ReadyEvent;
         IPlayer _Player;                        
-        public PlayerAdsorber()
-        {
-                                
-        }
+       
 
         public override IPlayer GetGPI()
         {
@@ -25,7 +23,7 @@ namespace Regulus.Project.Chat.Common.Adsorption
             _Player = gpi;
             
             EnableEvent.Invoke(true);
-            SupplyEvent.Invoke(gpi);
+            ReadyEvent.Invoke(gpi);
         }
 
         public override void Unsupply(IPlayer gpi)

@@ -1,7 +1,8 @@
                     
+
 namespace Regulus.Project.Chat.Common.Adsorption
 {
-    
+    [UnityEngine.AddComponentMenu("RegulusAdsorbers/IAccount(Adsorber)")]
     public class AccountAdsorber : Regulus.Remoting.Unity.Adsorber<IAccount>
     {
         [System.Serializable]
@@ -9,12 +10,9 @@ namespace Regulus.Project.Chat.Common.Adsorption
         public UnityEnableEvent EnableEvent;
         [System.Serializable]
         public class UnitySupplyEvent : UnityEngine.Events.UnityEvent<IAccount> {}
-        public UnitySupplyEvent SupplyEvent;
+        public UnitySupplyEvent ReadyEvent;
         IAccount _Account;                        
-        public AccountAdsorber()
-        {
-                                
-        }
+       
 
         public override IAccount GetGPI()
         {
@@ -25,7 +23,7 @@ namespace Regulus.Project.Chat.Common.Adsorption
             _Account = gpi;
             
             EnableEvent.Invoke(true);
-            SupplyEvent.Invoke(gpi);
+            ReadyEvent.Invoke(gpi);
         }
 
         public override void Unsupply(IAccount gpi)
