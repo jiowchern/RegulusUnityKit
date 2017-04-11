@@ -15,7 +15,7 @@ using Microsoft.CSharp;
 
 using UnityEngine;
 
-internal class AdsorptionGeneratorInput : IStage , IGUIDrawer
+internal class AdsorptionWindowCreate : IStage , IGUIDrawer
 {
     public event Action DoneEvent;
     private string _OutputPath;
@@ -24,7 +24,7 @@ internal class AdsorptionGeneratorInput : IStage , IGUIDrawer
     private string _InputPath;
     private Assembly _Assembly;
 
-    public AdsorptionGeneratorInput()
+    public AdsorptionWindowCreate()
     {
         _Namespaces = new string[0];
         _NamespaceIndex = 0;
@@ -61,7 +61,7 @@ internal class AdsorptionGeneratorInput : IStage , IGUIDrawer
         }
 
         
-        //AdsorptionGeneratorInput._ExportDLL(assembly, output_path, codes);
+        //AdsorptionWindowCreate._ExportDLL(assembly, output_path, codes);
     }
 
     private void _ExportCs(Type type, string code)
@@ -133,7 +133,7 @@ namespace {0}.Adsorption
         public UnityEnableEvent EnableEvent;
         [System.Serializable]
         public class UnitySupplyEvent : UnityEngine.Events.UnityEvent<{1}> {{}}
-        public UnitySupplyEvent ReadyEvent;
+        public UnitySupplyEvent SupplyEvent;
         {1} _{7};                        
        
 
@@ -146,7 +146,7 @@ namespace {0}.Adsorption
             _{7} = gpi;
             {5}
             EnableEvent.Invoke(true);
-            ReadyEvent.Invoke(gpi);
+            SupplyEvent.Invoke(gpi);
         }}
 
         public override void Unsupply({1} gpi)

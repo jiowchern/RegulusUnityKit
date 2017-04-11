@@ -95,11 +95,16 @@ namespace Regulus.Remoting.Unity
                 return null;
             }
 
-            if (!methodArgs.All(m => eventArgs.All(e => e.ParameterType == m.ParameterType)))
+
+            for (int i = 0; i < methodArgs.Length; i++)
             {
-                Debug.LogErrorFormat("Parameter matching error. Please check type. (Adsorber){0}.{1} (Source){3}.{2}",adsorberType.Name,info.Name,source_method.Name,source_instance.GetType().Name);
-                return null;
+                if (methodArgs[i].ParameterType != eventArgs[i].ParameterType)
+                {
+                    Debug.LogErrorFormat("Parameter matching error. Please check type. (Adsorber){0}.{1} (Source){3}.{2}", adsorberType.Name, info.Name, source_method.Name, source_instance.GetType().Name);
+                    return null;
+                }
             }
+            
             return info;
         }
 

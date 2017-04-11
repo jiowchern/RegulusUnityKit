@@ -10,7 +10,7 @@ using Microsoft.CSharp;
 
 using Regulus.Utility;
 
-public class AdsorptionGeneratorWindow : EditorWindow , IGUIDrawer
+public class AdsorptionWindow : EditorWindow , IGUIDrawer
 {
 
 
@@ -18,7 +18,7 @@ public class AdsorptionGeneratorWindow : EditorWindow , IGUIDrawer
     private readonly Regulus.Utility.StageMachine _Machine;
 
     private IGUIDrawer _Drawer;
-    public AdsorptionGeneratorWindow()
+    public AdsorptionWindow()
     {
         _Machine = new StageMachine();
 
@@ -29,7 +29,7 @@ public class AdsorptionGeneratorWindow : EditorWindow , IGUIDrawer
 
     private void _ToInput()
     {
-        var stage = new AdsorptionGeneratorInput();
+        var stage = new AdsorptionWindowCreate();
         _Drawer = stage;
         stage.DoneEvent += _ToWatingCompile;
         _Machine.Push(stage);
@@ -37,7 +37,7 @@ public class AdsorptionGeneratorWindow : EditorWindow , IGUIDrawer
 
     private void _ToWatingCompile()
     {
-        var stage = new AdsorptionGeneratorWaitCompile();
+        var stage = new AdsorptionWindowWaitCompile();
         _Drawer = stage;
         stage.DoneEvent += _ToCollectLostMethods;
         _Machine.Push(stage);
@@ -45,15 +45,15 @@ public class AdsorptionGeneratorWindow : EditorWindow , IGUIDrawer
 
     private void _ToCollectLostMethods()
     {
-        var stage = new AdsorptionGeneratorCollectLostMethods();
+        var stage = new AdsorptionWindowCollectLostMethods();
         _Drawer = stage;
         stage.DoneEvent += _ToErrorLogs;
         _Machine.Push(stage);
     }
 
-    private void _ToErrorLogs(AdsorptionGeneratorCollectLostMethods.Error[] errors)
+    private void _ToErrorLogs(AdsorptionWindowCollectLostMethods.Error[] errors)
     {
-        var stage = new AdsorptionGeneratorErrorLog(errors);
+        var stage = new AdsorptionErrorLog(errors);
         _Drawer = stage;
         stage.DoneEvent += _ToInput;
         _Machine.Push(stage);
@@ -62,7 +62,7 @@ public class AdsorptionGeneratorWindow : EditorWindow , IGUIDrawer
     [MenuItem("Regulus/Adsorption/Create")]
     public static void OpenCreate()
     {
-        var wnd = EditorWindow.GetWindow<AdsorptionGeneratorWindow>();
+        var wnd = EditorWindow.GetWindow<AdsorptionWindow>();
         wnd.Create();
     }
 
@@ -73,9 +73,9 @@ public class AdsorptionGeneratorWindow : EditorWindow , IGUIDrawer
     }
 
     [MenuItem("Regulus/Adsorption/Check")]
-    public static void OpenCheck()
+    public static void OpenCheck() 
     {
-        var wnd = EditorWindow.GetWindow<AdsorptionGeneratorWindow>();
+        var wnd = EditorWindow.GetWindow<AdsorptionWindow>();
         wnd.Check();
     }
 
@@ -99,6 +99,15 @@ public class AdsorptionGeneratorWindow : EditorWindow , IGUIDrawer
 
     void IGUIDrawer.Draw()
     {
-        
+        EditorGUILayout.BeginVertical();
+        if (GUILayout.Button("Create"))
+        {
+            Create();            
+        }
+        if (GUILayout.Button("Check"))
+        {
+            Check();
+        }
+        EditorGUILayout.EndVertical();
     }
 }

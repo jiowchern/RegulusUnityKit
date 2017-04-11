@@ -8,15 +8,15 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-internal class AdsorptionGeneratorErrorLog : IGUIDrawer , IStage
+internal class AdsorptionErrorLog : IGUIDrawer , IStage
 {
-    private readonly AdsorptionGeneratorCollectLostMethods.Error[] _Errors;
+    private readonly AdsorptionWindowCollectLostMethods.Error[] _Errors;
 
     public Action DoneEvent;
 
     private Vector2 _Position;
 
-    public AdsorptionGeneratorErrorLog(AdsorptionGeneratorCollectLostMethods.Error[] errors)
+    public AdsorptionErrorLog(AdsorptionWindowCollectLostMethods.Error[] errors)
     {
         _Errors = errors;
         _Position = Vector2.zero;
@@ -26,7 +26,10 @@ internal class AdsorptionGeneratorErrorLog : IGUIDrawer , IStage
     {
 
         _Position = UnityEditor.EditorGUILayout.BeginScrollView(_Position);
-
+        if (_Errors.Length == 0)
+        {
+            UnityEngine.GUILayout.Label("No Error");
+        }
 
         for (int i = 0; i < _Errors.Length; i++)
         {
@@ -38,9 +41,9 @@ internal class AdsorptionGeneratorErrorLog : IGUIDrawer , IStage
         UnityEditor.EditorGUILayout.EndScrollView();
     }
 
-    private void _Open(AdsorptionGeneratorCollectLostMethods.Error error)
+    private void _Open(AdsorptionWindowCollectLostMethods.Error error)
     {
-        var pattern = string.Format(@"\[\s*Adsorber(Attribute)*\s*\(\s*typeof\s*\(\s*[\w.]*{0}\s*\)\s*,\s*""{1}""\s*\)\s*\]", error.Type , error.Method );
+        var pattern = string.Format(@"\[\s*(Regulus.Remoting.Unity.)?Adsorber(Attribute)?\s*\(\s*typeof\s*\(\s*[\w.]*{0}\s*\)\s*,\s*""{1}""\s*\)\s*\]", error.Type , error.Method );
 
         var rgx = new Regex(pattern);
 
@@ -50,12 +53,8 @@ internal class AdsorptionGeneratorErrorLog : IGUIDrawer , IStage
         foreach (Match match in matchs)
         {
             var line = _GetLine(match.Index , text);
-
-
-
             var obj = UnityEditor.AssetDatabase.LoadAssetAtPath(error.Path, typeof (TextAsset));
             UnityEditor.AssetDatabase.OpenAsset(obj, line + 1);
-
         }
     }
 

@@ -9,7 +9,7 @@ using Regulus.Utility;
 
 using UnityEngine;
 
-internal class AdsorptionGeneratorCollectLostMethods : IStage, IGUIDrawer
+internal class AdsorptionWindowCollectLostMethods : IStage, IGUIDrawer
 {
     public class Error
     {
@@ -20,8 +20,8 @@ internal class AdsorptionGeneratorCollectLostMethods : IStage, IGUIDrawer
             Message = message;
             Type = type;
             Method = method;
-            Path = path;
-        }
+            Path = path; 
+        } 
 
         public readonly string Type;
 
@@ -61,10 +61,14 @@ internal class AdsorptionGeneratorCollectLostMethods : IStage, IGUIDrawer
 
     private readonly int _StepAmount;
 
+    private float _CollectMethodTime;
+
     private readonly List<Error> _Errors;
 
-    public AdsorptionGeneratorCollectLostMethods()
+    public AdsorptionWindowCollectLostMethods()
     {
+        var timer = new Regulus.Utility.TimeCounter();
+
         _Errors = new List<Error>();
         var methods = new HashSet<Method>(new MethodComparer());
         var assets = UnityEditor.AssetDatabase.FindAssets("t:script");
@@ -98,6 +102,8 @@ internal class AdsorptionGeneratorCollectLostMethods : IStage, IGUIDrawer
         _Methods = new Queue<Method>(methods);
 
         _StepAmount = _Methods.Count;
+
+        _CollectMethodTime = timer.Second;
     }
 
     
@@ -160,11 +166,15 @@ internal class AdsorptionGeneratorCollectLostMethods : IStage, IGUIDrawer
 
     void IGUIDrawer.Draw()
     {
+        UnityEditor.EditorGUILayout.BeginVertical();
+        UnityEditor.EditorGUILayout.LabelField("Collect time : " + _CollectMethodTime);
+        UnityEditor.EditorGUILayout.EndVertical();
         var progress = string.Format("{0}/{1}", _StepAmount - _Methods.Count, _StepAmount);
         //var message = string.Format("{0}.{1} ... ", methodInfo.DeclaringType.Name ,  methodInfo.Name);
         var rect = UnityEditor.EditorGUILayout.BeginVertical();
         UnityEditor.EditorGUI.ProgressBar(rect, 1f - _Methods.Count / (float)_StepAmount, progress);
         GUILayout.Space(16);
+        
         UnityEditor.EditorGUILayout.EndVertical();
     }
 }

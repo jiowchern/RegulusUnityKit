@@ -1,11 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
 namespace Regulus.Remoting.Unity
 {
+    public class ExpressionAdsorberAttribute
+    {
+        
+    }
+    public class TExpressionAdsorberAttribute<T> : ExpressionAdsorberAttribute
+    {
+        public TExpressionAdsorberAttribute(Expression<Action<T>> exp)
+        {
+            
+        }
+    }
+
     public class AdsorberAttribute : System.Attribute
     {
         public AdsorberAttribute(Type adsorber, string target)
@@ -15,7 +28,12 @@ namespace Regulus.Remoting.Unity
             Target = target;
         }
 
-        
+        public AdsorberAttribute(ExpressionAdsorberAttribute a )
+        {
+            
+        }
+
+
         public readonly Type Adsorber;        
         public readonly string Target;
 
@@ -44,11 +62,12 @@ namespace Regulus.Remoting.Unity
                 return MATCH.DIFFERENT_METHOD_PARAMS_LENGTH;
             }
 
-            if (adsbuterParams.All(a => scriptParams.All(s => s.ParameterType == a.ParameterType)) == false)
+            for (int i = 0; i < adsbuterParams.Length; i++)
             {
-                return MATCH.DIFFERENT_METHOD_PARAMS_TYPE;
+                if(adsbuterParams[i].ParameterType != scriptParams[i].ParameterType)
+                    return MATCH.DIFFERENT_METHOD_PARAMS_TYPE;
             }
-
+            
             return MATCH.OK;
         }
     }

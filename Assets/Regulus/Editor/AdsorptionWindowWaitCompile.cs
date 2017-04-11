@@ -2,7 +2,7 @@ using System;
 
 using Regulus.Utility;
 
-internal class AdsorptionGeneratorWaitCompile : IStage,   IGUIDrawer
+internal class AdsorptionWindowWaitCompile : IStage,   IGUIDrawer
 {
 
     public event Action DoneEvent; 
