@@ -7,7 +7,7 @@ using UnityEditorInternal;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
-
+[ExecuteInEditMode]
 internal class AdsorptionErrorLog : IGUIDrawer , IStage
 {
     private readonly AdsorptionWindowCollectLostMethods.Error[] _Errors;

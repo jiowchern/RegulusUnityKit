@@ -9,6 +9,8 @@ using UnityEngine;
 
 namespace Regulus.Remoting.Unity
 {
+
+    [ExecuteInEditMode]
     public class AdsorptionEventBinder<T> 
     {
         private readonly T _Source;

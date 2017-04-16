@@ -10,18 +10,18 @@ using Microsoft.CSharp;
 
 using Regulus.Utility;
 
+
+[ExecuteInEditMode]
 public class AdsorptionWindow : EditorWindow , IGUIDrawer
 {
-
-
-    
     private readonly Regulus.Utility.StageMachine _Machine;
 
     private IGUIDrawer _Drawer;
     public AdsorptionWindow()
     {
         _Machine = new StageMachine();
-
+         
+        
 
         _Drawer = this;
         

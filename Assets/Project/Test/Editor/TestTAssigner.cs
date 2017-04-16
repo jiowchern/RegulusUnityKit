@@ -25,17 +25,17 @@ namespace Regulus.Remoting.Unity
 
             public int SupplyCount;
             public int UnsupplyCount;
-            public override void Supply(IGPI gpi)
+            public  void Supply(IGPI gpi)
             {
                 SupplyCount++;
             }
 
-            public override void Unsupply(IGPI gpi)
+            public  void Unsupply(IGPI gpi)
             {
                 UnsupplyCount++;
             }
 
-            public override IGPI GetGPI()
+            public  IGPI GetGPI()
             {
                 return null;
             }
@@ -105,7 +105,7 @@ namespace Regulus.Remoting.Unity
             var assigner = new Assigner<IGPI>(testNotifier);
 
             var obj = new UnityEngine.GameObject();
-            var testAdsorber = obj.AddComponent<TestAdsorber>();
+            var testAdsorber = new TestAdsorber();
             assigner.Register(testAdsorber);
 
 
@@ -123,7 +123,7 @@ namespace Regulus.Remoting.Unity
             var assigner = new Assigner<IGPI>(testNotifier);
 
             var obj = new UnityEngine.GameObject();
-            var testAdsorber = obj.AddComponent<TestAdsorber>();
+            var testAdsorber = new TestAdsorber();
             assigner.Register(testAdsorber);
 
             testNotifier.Add(gpi);
@@ -141,7 +141,7 @@ namespace Regulus.Remoting.Unity
             var assigner = new Assigner<IGPI>(testNotifier);
 
             var obj = new UnityEngine.GameObject();
-            var testAdsorber = obj.AddComponent<TestAdsorber>();
+            var testAdsorber = new TestAdsorber();
             assigner.Register(testAdsorber);
             testNotifier.Add(gpi);
             testNotifier.Remove(gpi);
@@ -158,7 +158,7 @@ namespace Regulus.Remoting.Unity
             var assigner = new Assigner<IGPI>(testNotifier);
 
             var obj = new UnityEngine.GameObject();
-            var testAdsorber = obj.AddComponent<TestAdsorber>();
+            var testAdsorber = new TestAdsorber();
             assigner.Register(testAdsorber);
             testNotifier.Add(gpi);
             testNotifier.Add(gpi);
@@ -177,8 +177,8 @@ namespace Regulus.Remoting.Unity
             var assigner = new Assigner<IGPI>(testNotifier);
 
             var obj = new UnityEngine.GameObject();
-            var testAdsorber1 = obj.AddComponent<TestAdsorber>();
-            var testAdsorber2 = obj.AddComponent<TestAdsorber>();
+            var testAdsorber1 = new TestAdsorber();
+            var testAdsorber2 = new TestAdsorber();
 
             testNotifier.Add(gpi);
             assigner.Register(testAdsorber1);
@@ -202,7 +202,7 @@ namespace Regulus.Remoting.Unity
             var assigner = new Assigner<IGPI>(testNotifier);
 
             var obj = new UnityEngine.GameObject();
-            var testAdsorber1 = obj.AddComponent<TestAdsorber>();
+            var testAdsorber1 = new TestAdsorber();
             assigner.Register(testAdsorber1);
 
             testNotifier.Add(gpi);            
@@ -227,14 +227,14 @@ namespace Regulus.Remoting.Unity
             testNotifier.Add(gpi);
 
             var obj1 = new UnityEngine.GameObject();
-            var testAdsorber1 = obj1.AddComponent<TestAdsorber>();
+            var testAdsorber1 = new TestAdsorber();
 
 
             assigner.Register(testAdsorber1);
             assigner.Unregister(testAdsorber1);
 
             var obj2 = new UnityEngine.GameObject();
-            var testAdsorber2 = obj2.AddComponent<TestAdsorber>();
+            var testAdsorber2 = new TestAdsorber();
 
 
             assigner.Register(testAdsorber2);

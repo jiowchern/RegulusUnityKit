@@ -1,7 +1,7 @@
 fileFormatVersion: 2
-guid: 7ec3aad99e3c1bd4fafe65cbe2b971d6
-timeCreated: 1491373411
-licenseType: Pro
+guid: c1e098f660351f54d9d358268d3f3734
+timeCreated: 1492343459
+licenseType: Free
 PluginImporter:
   serializedVersion: 1
   iconMap: {}
@@ -10,10 +10,10 @@ PluginImporter:
   isOverridable: 0
   platformData:
     Any:
-      enabled: 1
+      enabled: 0
       settings: {}
     Editor:
-      enabled: 0
+      enabled: 1
       settings:
         DefaultValueInitialized: true
     WindowsStoreApps:

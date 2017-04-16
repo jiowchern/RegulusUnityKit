@@ -13,8 +13,12 @@ using System.Text;
 
 using Microsoft.CSharp;
 
+using Regulus.Protocol;
+
 using UnityEngine;
 
+
+[ExecuteInEditMode]
 internal class AdsorptionWindowCreate : IStage , IGUIDrawer
 {
     public event Action DoneEvent;
@@ -46,28 +50,124 @@ internal class AdsorptionWindowCreate : IStage , IGUIDrawer
         
     }
 
-    private void _Generate(Assembly assembly )
+    private void _Generate(Assembly assembly)
     {
+
+        
+        var ns = _GetNamespace();
+        var providerName = ns + "ProtocolProvider";
 
         var codes = new List<string>();
         foreach (var type in _GetTypes(assembly))
         {
+
             var code = _BuildAdsorberCode(type);
+            //("adsorber", _GetClassName(type.Name) + "Adsorber", code);
             codes.Add(code);
 
-            _ExportCs(type, code);
+            var code2 = _BuildBroadcasterCode(type);
+            codes.Add(code2);
+            //_ExportCs("Broadcaster", _GetClassName(type.Name) + "Broadcaster", code2);
+
 
             // TODO : _BuildInspectorCode(type);
         }
 
+        var agent = _BuildAgentCode();
+        codes.Add(agent);
+
+        //_ExportCs("agent", "Agent" , agent);
+        var codeBuilder = new CodeBuilder();
         
-        //AdsorptionWindowCreate._ExportDLL(assembly, output_path, codes);
+       /* var protocolPath = _OutputPath + "\\Protocol\\";
+        System.IO.Directory.CreateDirectory(protocolPath);
+        codeBuilder.ProviderEvent += (code) => { _WriteFile(protocolPath + providerName + ".cs", code); };
+        codeBuilder.GpiEvent += (type_name, code) => { _WriteFile(protocolPath + type_name + ".cs", code); };
+        codeBuilder.EventEvent += (type_name, event_name, code) => { _WriteFile(protocolPath + type_name + event_name + ".cs", code); };
+        codeBuilder.Build(providerName, new[] { ns }, _GetTypes(assembly).ToArray());*/
+
+
+         codeBuilder.ProviderEvent += (code) => { codes.Add(code); };
+         codeBuilder.GpiEvent += (type_name, code) => { codes.Add(code); };
+         codeBuilder.EventEvent += (type_name, event_name, code) => { codes.Add(code); };
+         codeBuilder.Build(providerName,new[]{ns},_GetTypes(assembly).ToArray());
+        _ExportDLL(assembly, _OutputPath , codes);
     }
 
-    private void _ExportCs(Type type, string code)
+    private string _BuildAgentCode()
     {
-        System.IO.Directory.CreateDirectory(_OutputPath + "\\Scripts\\");
-        System.IO.File.WriteAllText(_OutputPath + "\\Scripts\\" + _GetClassName(type.Name) + "Adsorber" + ".cs", code);
+        return string.Format(@"
+using System;
+
+using Regulus.Utility;
+
+using UnityEngine;
+
+
+namespace {0}.Adsorption
+{{
+    public class Agent : MonoBehaviour
+    {{
+        public readonly Regulus.Remoting.Unity.Distributor Distributor;
+
+
+        private readonly Regulus.Utility.Updater _Updater;
+
+        private readonly Regulus.Remoting.IAgent _Agent;
+        public string Name;
+        public Agent()
+        {{
+            var protocol = new {0}ProtocolProvider() as Regulus.Remoting.IProtocol;
+            _Agent = Regulus.Remoting.Ghost.Native.Agent.Create(protocol.GetGPIProvider());
+            Distributor = new Regulus.Remoting.Unity.Distributor(_Agent);
+            _Updater = new Updater();
+
+        }}
+
+        void Start()   
+        {{
+            _Updater.Add(_Agent);
+        }}
+        // Use this for initialization
+        public void Connecter(string ip,int port)
+        {{
+            _Agent.Connecter(ip, port).OnValue += _ConnectResult;
+        }}
+
+        private void _ConnectResult(bool obj)
+        {{
+            ConnectEvent.Invoke(obj);
+        }}
+
+        void OnDestroy()
+        {{
+            _Updater.Shutdown();
+        }}
+
+       
+        // Update is called once per frame
+        void Update()
+        {{
+            _Updater.Working();
+        }}
+        [Serializable]
+        public class UnityAgentConnectEvent : UnityEngine.Events.UnityEvent<bool>{{}}
+
+        public UnityAgentConnectEvent ConnectEvent;
+    }}
+}}
+", _GetNamespace());
+    }
+
+    private void _WriteFile(string path_s, string code)
+    {
+        System.IO.File.WriteAllText(path_s, code);
+    }
+
+    private void _ExportCs(string dir,string file, string code)
+    {
+        System.IO.Directory.CreateDirectory(_OutputPath + "\\"+dir +"\\");
+        System.IO.File.WriteAllText(_OutputPath + "\\"+dir +"\\"+ file  + ".cs", code);
     }
 
     private static void _ExportDLL(Assembly assembly, string output_path, List<string> codes)
@@ -81,12 +181,12 @@ internal class AdsorptionWindowCreate : IStage , IGUIDrawer
 
         var assemblies = new[]
         {
-            "UnityEngine.dll",
-            "UnityEditor.dll",
+            "UnityEngine.dll",            
             "RegulusLibrary.dll",
             "RegulusRemoting.dll",
-            "Assembly-CSharp.dll",
-            "Assembly-CSharp-Editor.dll"
+            "RegulusRemotingGhostNative.dll",
+            "Regulus.Remoting.Unity.dll",
+
         };
 
         foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
@@ -100,7 +200,8 @@ internal class AdsorptionWindowCreate : IStage , IGUIDrawer
 
         param.ReferencedAssemblies.Add(assembly.Location);
         param.GenerateExecutable = false;
-        param.GenerateInMemory = true;
+        param.GenerateInMemory = false;
+        param.IncludeDebugInformation = false;
         param.OutputAssembly = output_path;
 
         var result = provider.CompileAssemblyFromSource(param, codes.ToArray());
@@ -117,7 +218,7 @@ internal class AdsorptionWindowCreate : IStage , IGUIDrawer
             throw new Exception(msg.ToString());
         }
     }
-
+   
     private string _BuildAdsorberCode(Type type)
     {
         var code = string.Format(
@@ -125,23 +226,80 @@ internal class AdsorptionWindowCreate : IStage , IGUIDrawer
 
 namespace {0}.Adsorption
 {{
-    [UnityEngine.AddComponentMenu(""RegulusAdsorbers/{1}(Adsorber)"")]
-    public class {7}Adsorber : Regulus.Remoting.Unity.Adsorber<{1}>
+    using System.Linq;
+        
+    public class {7}Adsorber : UnityEngine.MonoBehaviour , Regulus.Remoting.Unity.Adsorber<{1}>
     {{
+        private readonly Regulus.Utility.StageMachine _Machine;        
+        
+        public string Agent;
+
+        private {0}.Adsorption.Agent _Agent;
+
         [System.Serializable]
         public class UnityEnableEvent : UnityEngine.Events.UnityEvent<bool> {{}}
         public UnityEnableEvent EnableEvent;
         [System.Serializable]
-        public class UnitySupplyEvent : UnityEngine.Events.UnityEvent<{1}> {{}}
+        public class UnitySupplyEvent : UnityEngine.Events.UnityEvent<{0}.{1}> {{}}
         public UnitySupplyEvent SupplyEvent;
-        {1} _{7};                        
+        {0}.{1} _{7};                        
        
+        public {7}Adsorber()
+        {{
+            _Machine = new Regulus.Utility.StageMachine();
+        }}
 
-        public override {1} GetGPI()
+        void Start()
+        {{
+            _Machine.Push(new Regulus.Utility.SimpleStage(_ScanEnter, _ScanLeave, _ScanUpdate));
+        }}
+
+        private void _ScanUpdate()
+        {{
+            var agents = UnityEngine.GameObject.FindObjectsOfType<{0}.Adsorption.Agent>();
+            _Agent = agents.FirstOrDefault(d => string.IsNullOrEmpty(d.Name) == false && d.Name == Agent);
+            if(_Agent != null)
+            {{
+                _Machine.Push(new Regulus.Utility.SimpleStage(_DispatchEnter, _DispatchLeave));
+            }}            
+        }}
+
+        private void _DispatchEnter()
+        {{
+            _Agent.Distributor.Attach<{1}>(this);
+        }}
+
+        private void _DispatchLeave()
+        {{
+            _Agent.Distributor.Detach<{1}>(this);
+        }}
+
+        private void _ScanLeave()
+        {{
+
+        }}
+
+
+        private void _ScanEnter()
+        {{
+
+        }}
+
+        void Update()
+        {{
+            _Machine.Update();
+        }}
+
+        void OnDestroy()
+        {{
+            _Machine.Termination();
+        }}
+
+        public {0}.{1} GetGPI()
         {{
             return _{7};
         }}
-        public override void Supply({1} gpi)
+        public void Supply({0}.{1} gpi)
         {{
             _{7} = gpi;
             {5}
@@ -149,7 +307,7 @@ namespace {0}.Adsorption
             SupplyEvent.Invoke(gpi);
         }}
 
-        public override void Unsupply({1} gpi)
+        public void Unsupply({0}.{1} gpi)
         {{
             EnableEvent.Invoke(false);
             {6}
@@ -167,6 +325,116 @@ namespace {0}.Adsorption
         return code;
     }
 
+
+    private string _BuildBroadcasterCode(Type type)
+    {
+        return string.Format(@"
+using System;
+
+using System.Linq;
+
+using Regulus.Utility;
+
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace {0}.Adsorption
+{{
+    public class {2}Broadcaster : UnityEngine.MonoBehaviour 
+    {{
+        public string Agent;        
+        Regulus.Remoting.INotifier<{1}> _Notifier;
+
+        private readonly Regulus.Utility.StageMachine _Machine;
+
+        public {2}Broadcaster()
+        {{
+            _Machine = new StageMachine();
+        }} 
+
+        void Start()
+        {{
+            _ToScan();
+        }}
+
+        private void _ToScan()
+        {{
+            var stage = new Regulus.Utility.SimpleStage(_ScanEnter , _ScaneLeave , _ScaneUpdate);
+
+            _Machine.Push(stage);
+        }}
+
+
+        private void _ScaneUpdate()
+        {{
+            var agents = GameObject.FindObjectsOfType<{0}.Adsorption.Agent>();
+            var agent = agents.FirstOrDefault(d => d.Name == Agent);
+            if (agent != null)
+            {{
+                _Notifier = agent.Distributor.QueryNotifier<{0}.{1}>();
+
+                _ToInitial();                                
+            }}
+        }}
+
+        private void _ToInitial()
+        {{
+            var stage = new Regulus.Utility.SimpleStage(_Initial);
+            _Machine.Push(stage);
+        }}
+
+        private void _Initial()
+        {{
+            _Notifier.Supply += _Supply;
+            _Notifier.Unsupply += _Unsupply;
+        }}
+
+        private void _ScaneLeave()
+        {{
+            
+        }}
+
+        private void _ScanEnter()
+        {{
+            
+        }}
+
+        // Update is called once per frame
+        void Update()
+        {{
+            _Machine.Update();
+        }}
+
+        void OnDestroy()
+        {{
+            if (_Notifier != null)
+            {{
+                _Notifier.Supply -= _Supply;
+                _Notifier.Unsupply -= _Unsupply;
+            }}
+                
+            _Machine.Termination();
+        }}
+
+        private void _Unsupply({1} obj)
+        {{
+            UnsupplyEvent.Invoke(obj);
+        }}
+
+        private void _Supply({1} obj)
+        {{
+            SupplyEvent.Invoke(obj);
+        }}
+
+        [Serializable]
+        public class UnityBroadcastEvent : UnityEvent<{1}>{{}}
+
+        public UnityBroadcastEvent SupplyEvent;
+        public UnityBroadcastEvent UnsupplyEvent;
+    }}
+}}
+", _GetNamespace(), type.Name , _GetClassName(type.Name));
+    }
 
     private object _GetBindEvents(Type type, string op_code)
     {
@@ -398,8 +666,10 @@ namespace {0}.Adsorption
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField(_OutputPath);
         if (GUILayout.Button("Output"))
-        {            
-            _OutputPath = EditorUtility.SaveFolderPanel("Select Output Path", Application.dataPath , Application.dataPath );
+        {
+            _OutputPath = EditorUtility.SaveFilePanel("Select output dll" , Application.dataPath , _GetNamespace() + ".Protocol" ,"dll");
+
+            //EditorUtility.SaveFolderPanel("Select Output Path", Application.dataPath , Application.dataPath );
         }
         EditorGUILayout.EndHorizontal();
 
@@ -434,4 +704,10 @@ namespace {0}.Adsorption
 
         EditorGUILayout.EndVertical();
     }
+    private string _GetNamespace()
+    {
+        return _Namespaces[_NamespaceIndex];
+    }
 }
+
+    

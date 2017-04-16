@@ -5,16 +5,13 @@ using Regulus.Project.Chat.Common;
 
 using UnityEngine;
 
-public class TalkerFactory : Regulus.Remoting.Unity.Broadcaster<ITalker>
+public class TalkerFactory : MonoBehaviour
 {
     public Chat Chat;
     public GameObject TalkerSource;
-    protected override void _Unsupply(ITalker gpi)
-    {
-        
-    }
+    
 
-    protected override void _Supply(ITalker gpi)
+    public void Supply(ITalker gpi)
     {
         var obj = GameObject.Instantiate(TalkerSource);
         var talker = obj.GetComponent<Talker>();

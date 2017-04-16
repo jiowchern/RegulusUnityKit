@@ -8,7 +8,7 @@ using Regulus.Remoting.Unity;
 using Regulus.Utility;
 
 using UnityEngine;
-
+[ExecuteInEditMode]
 internal class AdsorptionWindowCollectLostMethods : IStage, IGUIDrawer
 {
     public class Error
@@ -67,7 +67,7 @@ internal class AdsorptionWindowCollectLostMethods : IStage, IGUIDrawer
 
     public AdsorptionWindowCollectLostMethods()
     {
-        var timer = new Regulus.Utility.TimeCounter();
+        //var timer = new Regulus.Utility.TimeCounter();
 
         _Errors = new List<Error>();
         var methods = new HashSet<Method>(new MethodComparer());
@@ -103,7 +103,7 @@ internal class AdsorptionWindowCollectLostMethods : IStage, IGUIDrawer
 
         _StepAmount = _Methods.Count;
 
-        _CollectMethodTime = timer.Second;
+        _CollectMethodTime = 0;//timer.Second;
     }
 
     

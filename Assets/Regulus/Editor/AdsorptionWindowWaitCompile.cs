@@ -2,6 +2,10 @@ using System;
 
 using Regulus.Utility;
 
+using UnityEngine;
+
+[ExecuteInEditMode]
+
 internal class AdsorptionWindowWaitCompile : IStage,   IGUIDrawer
 {
 

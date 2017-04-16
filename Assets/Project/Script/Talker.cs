@@ -1,7 +1,7 @@
 ﻿
 
 using Regulus.Project.Chat.Common;
-using Regulus.Project.Chat.Common.Adsorption;
+//using Regulus.Project.Chat.Common.Adsorption;
 using Regulus.Remoting.Unity;
 
 using UnityEngine;
@@ -14,7 +14,7 @@ public class Talker : UnityEngine.MonoBehaviour
     public string Name;
 
 
-    [AdsorberListener(typeof(TalkerAdsorber), "SupplyEvent")]
+    //[Adsorber(typeof(TalkerAdsorber), "SupplyEvent")]
     public void Supply(ITalker talker)
     {        
         Name = talker.Name;
@@ -22,7 +22,7 @@ public class Talker : UnityEngine.MonoBehaviour
     }
 
 
-    [AdsorberListener(typeof(TalkerAdsorber), "EnableEvent")]
+    //[Adsorber(typeof(TalkerAdsorber), "EnableEvent")]
     public void Enable(bool enable)
     {
         if (enable == false)
@@ -38,14 +38,14 @@ public class Talker : UnityEngine.MonoBehaviour
     {
         GameObject.Destroy(gameObject);
     }
-    [AdsorberListener(typeof(TalkerAdsorber) , "MessageEvent")]
+    //[Adsorber(typeof(TalkerAdsorber) , "MessageEvent")]
     public void Message(string message)
     {
         Chat.Message(Name , message);
     }
 
 
-    [AdsorberListener(typeof(TalkerAdsorber), "TestEvent")]
+    //[Adsorber(typeof(TalkerAdsorber), "TestEvent")]
     public void Test(int a)
     {
         //Chat.Message(Name , message);

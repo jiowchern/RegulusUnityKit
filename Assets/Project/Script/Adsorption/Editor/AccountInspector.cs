@@ -9,7 +9,7 @@ using System.Text;
 using NUnit.Framework;
 
 using Regulus.Project.Chat.Common;
-using Regulus.Project.Chat.Common.Adsorption;
+
 using Regulus.Remoting.Unity;
 
 using UnityEditor;
@@ -18,7 +18,7 @@ using UnityEngine;
 
 using Object = UnityEngine.Object;
 
-[CustomEditor(typeof(TalkerAdsorber))]
+//[CustomEditor(typeof(TalkerAdsorber))]
 public  class TalkerAdsorberInspector : UnityEditor.Editor
 {
     private Object _AttachObject;
@@ -55,7 +55,7 @@ public  class TalkerAdsorberInspector : UnityEditor.Editor
 
     private void _Attech(GameObject attach_object)
     {
-        var adsorberType =  typeof (TalkerAdsorber);
+        var adsorberType = typeof (int/*todo:TalkerAdsorber*/);
         
         var sourceInstance = attach_object;
         var components = sourceInstance.GetComponents<Component>();
@@ -67,7 +67,7 @@ public  class TalkerAdsorberInspector : UnityEditor.Editor
 
             foreach (var sourceMethod in _GetSourceMethods(type))
             {
-                foreach (AdsorberListenerAttribute adsorberListenerAttributese in sourceMethod.GetCustomAttributes(typeof(AdsorberListenerAttribute ), false))
+                foreach (AdsorberAttribute adsorberListenerAttributese in sourceMethod.GetCustomAttributes(typeof(AdsorberAttribute ), false))
                 {
 
                     if (adsorberListenerAttributese.Adsorber != adsorberType)
@@ -88,7 +88,7 @@ public  class TalkerAdsorberInspector : UnityEditor.Editor
 
     private void _AttechEvent(string event_name, MethodInfo source_method, Component source_instance)
     {
-        var adsorberType = typeof(TalkerAdsorber);
+        var adsorberType = typeof(int/*todo : TalkerAdsorber*/);
         var info = (from i in _GetEvents(adsorberType) where i.Name == event_name select i).FirstOrDefault();
 
         if (info == null)

@@ -1,3 +1,6 @@
 [submodule "ChatSample"]
 	path = ChatSample
 	url = https://github.com/jiowchern/ChatSample.git
+[submodule "RegulusUnityKitLibrary"]
+	path = RegulusUnityKitLibrary
+	url = https://github.com/jiowchern/RegulusUnityKitLibrary.git
