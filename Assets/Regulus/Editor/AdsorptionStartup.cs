@@ -14,7 +14,7 @@ namespace Regulus.Remoting.Unity
         [UnityEditor.Callbacks.DidReloadScripts]
         private static void OnScriptsReloaded()
         {
-            //AdsorptionWindow.OpenCheck();
+            AdsorptionWindow.OpenCheck();
         }
     }
 }

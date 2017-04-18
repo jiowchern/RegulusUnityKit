@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Regulus.Project.Chat.Common;
+using Regulus.Project.Chat.Common.Adsorption;
 
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class TalkerFactory : MonoBehaviour
 {
     public Chat Chat;
     public GameObject TalkerSource;
+
     
 
     public void Supply(ITalker gpi)
