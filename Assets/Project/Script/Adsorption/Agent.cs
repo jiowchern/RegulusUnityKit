@@ -20,7 +20,7 @@ namespace Regulus.Project.Chat.Common.Adsorption
         public Agent()
         {
             var protocol = new ProtocolProvider() as Regulus.Remoting.IProtocol;
-            _Agent = Regulus.Remoting.Ghost.Native.Agent.Create(protocol.GetGPIProvider());
+            _Agent = Regulus.Remoting.Ghost.Native.Agent.Create(protocol.GetGPIProvider() , protocol.GetSerialize());
             Distributor = new Regulus.Remoting.Unity.Distributor(_Agent);
             _Updater = new Updater();
 

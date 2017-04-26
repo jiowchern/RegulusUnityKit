@@ -7,6 +7,7 @@
                 {
                     Regulus.Remoting.GPIProvider _GPIProvider;
                     Regulus.Remoting.EventProvider _EventProvider;
+                    Regulus.Serialization.ISerializer _Serializer;
                     public ProtocolProvider()
                     {
                         var types = new Dictionary<Type, Type>();
@@ -18,6 +19,8 @@ types.Add(typeof(Regulus.Project.Chat.Common.ITalker) , typeof(Regulus.Project.C
                         var eventClosures = new List<Regulus.Remoting.IEventProxyCreator>();
                         eventClosures.Add(new Regulus.Project.Chat.Common.Event.ITalker.MessageEvent() );
                         _EventProvider = new Regulus.Remoting.EventProvider(eventClosures);
+
+                        _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder(typeof(System.String),typeof(System.Boolean)));
                     }
 
 
@@ -29,6 +32,11 @@ types.Add(typeof(Regulus.Project.Chat.Common.ITalker) , typeof(Regulus.Project.C
                     Regulus.Remoting.EventProvider Regulus.Remoting.IProtocol.GetEventProvider()
                     {
                         return _EventProvider;
+                    }
+
+                    Regulus.Serialization.ISerializer Regulus.Remoting.IProtocol.GetSerialize()
+                    {
+                        return _Serializer;
                     }
                     
                 }

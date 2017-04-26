@@ -11,8 +11,11 @@
             Regulus.Remoting.IGhostRequest _Requester;
             Guid _GhostIdName;
             Regulus.Remoting.ReturnValueQueue _Queue;
-            public CIAccount(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return )
+            readonly Regulus.Serialization.ISerializer _Serializer ;
+            public CIAccount(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return , Regulus.Serialization.ISerializer serializer)
             {
+                _Serializer = serializer;
+
                 _Requester = requester;
                 _HaveReturn = have_return ;
                 _GhostIdName = id;
@@ -49,11 +52,11 @@
                     
                     var paramList = new System.Collections.Generic.List<byte[]>();
 
-    var user_nameBytes = Regulus.TypeHelper.Serializer<System.String>(user_name);    
+    var user_nameBytes = _Serializer.Serialize(user_name);  
     paramList.Add(user_nameBytes);
 
 data.MethodParams = paramList.ToArray();
-                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer());
+                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer(_Serializer));
 
                     
                 }

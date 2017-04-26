@@ -11,8 +11,11 @@
             Regulus.Remoting.IGhostRequest _Requester;
             Guid _GhostIdName;
             Regulus.Remoting.ReturnValueQueue _Queue;
-            public CITalker(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return )
+            readonly Regulus.Serialization.ISerializer _Serializer ;
+            public CITalker(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return , Regulus.Serialization.ISerializer serializer)
             {
+                _Serializer = serializer;
+
                 _Requester = requester;
                 _HaveReturn = have_return ;
                 _GhostIdName = id;

@@ -11,8 +11,11 @@
             Regulus.Remoting.IGhostRequest _Requester;
             Guid _GhostIdName;
             Regulus.Remoting.ReturnValueQueue _Queue;
-            public CIPlayer(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return )
+            readonly Regulus.Serialization.ISerializer _Serializer ;
+            public CIPlayer(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return , Regulus.Serialization.ISerializer serializer)
             {
+                _Serializer = serializer;
+
                 _Requester = requester;
                 _HaveReturn = have_return ;
                 _GhostIdName = id;
@@ -53,11 +56,11 @@
 
                     var paramList = new System.Collections.Generic.List<byte[]>();
 
-    var messageBytes = Regulus.TypeHelper.Serializer<System.String>(message);    
+    var messageBytes = _Serializer.Serialize(message);  
     paramList.Add(messageBytes);
 
 data.MethodParams = paramList.ToArray();
-                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer());
+                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer(_Serializer));
 
                     return returnValue;
                 }
@@ -74,7 +77,7 @@ data.MethodParams = paramList.ToArray();
                     var paramList = new System.Collections.Generic.List<byte[]>();
 
 data.MethodParams = paramList.ToArray();
-                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer());
+                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer(_Serializer));
 
                     
                 }
