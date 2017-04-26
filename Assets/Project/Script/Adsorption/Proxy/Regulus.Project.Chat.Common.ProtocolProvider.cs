@@ -20,7 +20,7 @@ types.Add(typeof(Regulus.Project.Chat.Common.ITalker) , typeof(Regulus.Project.C
                         eventClosures.Add(new Regulus.Project.Chat.Common.Event.ITalker.MessageEvent() );
                         _EventProvider = new Regulus.Remoting.EventProvider(eventClosures);
 
-                        _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder(typeof(System.String),typeof(System.Boolean)));
+                        _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder(typeof(System.Char),typeof(System.Char[]),typeof(System.String),typeof(System.Boolean),typeof(Regulus.Remoting.RequestPackage),typeof(System.Byte[]),typeof(System.Byte),typeof(Regulus.Remoting.ClientToServerOpCode),typeof(Regulus.Remoting.ResponsePackage),typeof(Regulus.Remoting.ServerToClientOpCode),typeof(Regulus.Remoting.PackageUpdateProperty),typeof(System.Guid),typeof(Regulus.Remoting.PackageInvokeEvent),typeof(System.Byte[][]),typeof(Regulus.Remoting.PackageErrorMethod),typeof(Regulus.Remoting.PackageReturnValue),typeof(Regulus.Remoting.PackageLoadSoulCompile),typeof(Regulus.Remoting.PackageLoadSoul),typeof(Regulus.Remoting.PackageUnloadSoul),typeof(Regulus.Remoting.PackageCallMethod),typeof(Regulus.Remoting.PackageRelease)));
                     }
 
 
