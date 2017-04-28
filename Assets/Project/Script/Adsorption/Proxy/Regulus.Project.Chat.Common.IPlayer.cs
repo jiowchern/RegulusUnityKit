@@ -24,7 +24,7 @@
 
             void Regulus.Remoting.IGhost.OnEvent(string name_event, byte[][] args)
             {
-                Regulus.Remoting.AgentCore.CallEvent(name_event , "CIPlayer" , this , args);
+                Regulus.Remoting.AgentCore.CallEvent(name_event , "CIPlayer" , this , args, _Serializer);
             }
 
             Guid Regulus.Remoting.IGhost.GetID()
@@ -39,7 +39,7 @@
 
             void Regulus.Remoting.IGhost.OnProperty(string name, byte[] value)
             {
-                Regulus.Remoting.AgentCore.UpdateProperty(name , "CIPlayer" , this , value);
+                Regulus.Remoting.AgentCore.UpdateProperty(name , "CIPlayer" , this , value , _Serializer);
             }
             
                 Regulus.Remoting.Value<System.Boolean> Regulus.Project.Chat.Common.IPlayer.Talk(System.String message)

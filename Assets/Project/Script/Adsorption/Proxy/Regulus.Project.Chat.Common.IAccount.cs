@@ -24,7 +24,7 @@
 
             void Regulus.Remoting.IGhost.OnEvent(string name_event, byte[][] args)
             {
-                Regulus.Remoting.AgentCore.CallEvent(name_event , "CIAccount" , this , args);
+                Regulus.Remoting.AgentCore.CallEvent(name_event , "CIAccount" , this , args, _Serializer);
             }
 
             Guid Regulus.Remoting.IGhost.GetID()
@@ -39,7 +39,7 @@
 
             void Regulus.Remoting.IGhost.OnProperty(string name, byte[] value)
             {
-                Regulus.Remoting.AgentCore.UpdateProperty(name , "CIAccount" , this , value);
+                Regulus.Remoting.AgentCore.UpdateProperty(name , "CIAccount" , this , value , _Serializer);
             }
             
                 void Regulus.Project.Chat.Common.IAccount.Login(System.String user_name)
