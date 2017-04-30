@@ -10,7 +10,7 @@ namespace Regulus.Project.Chat.Common.Adsorption
         
         public string Agent;
 
-        private Regulus.Project.Chat.Common.Adsorption.Agent _Agent;
+        private global::Regulus.Project.Chat.Common.Agent _Agent;
 
         [System.Serializable]
         public class UnityEnableEvent : UnityEngine.Events.UnityEvent<bool> {}
@@ -32,7 +32,7 @@ namespace Regulus.Project.Chat.Common.Adsorption
 
         private void _ScanUpdate()
         {
-            var agents = UnityEngine.GameObject.FindObjectsOfType<Regulus.Project.Chat.Common.Adsorption.Agent>();
+            var agents = UnityEngine.GameObject.FindObjectsOfType<global::Regulus.Project.Chat.Common.Agent>();
             _Agent = agents.FirstOrDefault(d => string.IsNullOrEmpty(d.Name) == false && d.Name == Agent);
             if(_Agent != null)
             {

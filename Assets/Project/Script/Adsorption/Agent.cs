@@ -6,8 +6,7 @@ using Regulus.Utility;
 using UnityEngine;
 
 
-namespace Regulus.Project.Chat.Common.Adsorption
-{
+namespace Regulus.Project.Chat.Common{ 
     public class Agent : MonoBehaviour
     {
         public readonly Regulus.Remoting.Unity.Distributor Distributor;
@@ -19,7 +18,7 @@ namespace Regulus.Project.Chat.Common.Adsorption
         public string Name;
         public Agent()
         {
-            var protocol = new ProtocolProvider() as Regulus.Remoting.IProtocol;
+            var protocol = new Regulus.Project.Chat.Common.Provider() as Regulus.Remoting.IProtocol;
             _Agent = Regulus.Remoting.Ghost.Native.Agent.Create(protocol.GetGPIProvider() , protocol.GetSerialize());
             Distributor = new Regulus.Remoting.Unity.Distributor(_Agent);
             _Updater = new Updater();

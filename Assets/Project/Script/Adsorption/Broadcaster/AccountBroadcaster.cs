@@ -8,12 +8,11 @@ using Regulus.Utility;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Regulus.Project.Chat.Common.Adsorption
-{
+namespace Regulus.Project.Chat.Common{ 
     public class AccountBroadcaster : UnityEngine.MonoBehaviour 
     {
         public string Agent;        
-        Regulus.Remoting.INotifier<IAccount> _Notifier;
+        Regulus.Remoting.INotifier<Regulus.Project.Chat.Common.IAccount> _Notifier;
 
         private readonly Regulus.Utility.StageMachine _Machine;
 
@@ -37,7 +36,7 @@ namespace Regulus.Project.Chat.Common.Adsorption
 
         private void _ScaneUpdate()
         {
-            var agents = GameObject.FindObjectsOfType<Regulus.Project.Chat.Common.Adsorption.Agent>();
+            var agents = GameObject.FindObjectsOfType<Regulus.Project.Chat.Common.Agent>();
             var agent = agents.FirstOrDefault(d => d.Name == Agent);
             if (agent != null)
             {
@@ -86,18 +85,18 @@ namespace Regulus.Project.Chat.Common.Adsorption
             _Machine.Termination();
         }
 
-        private void _Unsupply(IAccount obj)
+        private void _Unsupply(Regulus.Project.Chat.Common.IAccount obj)
         {
             UnsupplyEvent.Invoke(obj);
         }
 
-        private void _Supply(IAccount obj)
+        private void _Supply(Regulus.Project.Chat.Common.IAccount obj)
         {
             SupplyEvent.Invoke(obj);
         }
 
         [Serializable]
-        public class UnityBroadcastEvent : UnityEvent<IAccount>{}
+        public class UnityBroadcastEvent : UnityEvent<Regulus.Project.Chat.Common.IAccount>{}
 
         public UnityBroadcastEvent SupplyEvent;
         public UnityBroadcastEvent UnsupplyEvent;

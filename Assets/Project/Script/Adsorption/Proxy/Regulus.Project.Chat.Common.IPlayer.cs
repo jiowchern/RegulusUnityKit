@@ -46,21 +46,21 @@
                 {                    
 
                         
-                    var data = new Regulus.Remoting.PackageCallMethod();
-                    data.EntityId = _GhostIdName;
-                    data.MethodName ="Talk";
+                    var packageCallMethod = new Regulus.Remoting.PackageCallMethod();
+                    packageCallMethod.EntityId = _GhostIdName;
+                    packageCallMethod.MethodName ="Talk";
                     
     var returnValue = new Regulus.Remoting.Value<System.Boolean>();
     var returnId = _Queue.PushReturnValue(returnValue);    
-    data.ReturnId = returnId;
+    packageCallMethod.ReturnId = returnId;
 
                     var paramList = new System.Collections.Generic.List<byte[]>();
 
     var messageBytes = _Serializer.Serialize(message);  
     paramList.Add(messageBytes);
 
-data.MethodParams = paramList.ToArray();
-                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer(_Serializer));
+packageCallMethod.MethodParams = paramList.ToArray();
+                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , packageCallMethod.ToBuffer(_Serializer));
 
                     return returnValue;
                 }
@@ -70,14 +70,14 @@ data.MethodParams = paramList.ToArray();
                 {                    
 
                         
-                    var data = new Regulus.Remoting.PackageCallMethod();
-                    data.EntityId = _GhostIdName;
-                    data.MethodName ="Exit";
+                    var packageCallMethod = new Regulus.Remoting.PackageCallMethod();
+                    packageCallMethod.EntityId = _GhostIdName;
+                    packageCallMethod.MethodName ="Exit";
                     
                     var paramList = new System.Collections.Generic.List<byte[]>();
 
-data.MethodParams = paramList.ToArray();
-                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer(_Serializer));
+packageCallMethod.MethodParams = paramList.ToArray();
+                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , packageCallMethod.ToBuffer(_Serializer));
 
                     
                 }

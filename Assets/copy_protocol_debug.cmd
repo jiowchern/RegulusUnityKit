@@ -14,8 +14,6 @@ cd..
 cd..
 copy ChatSample\Server\Bin\Regulus.Project.Chat.Common.dll assets\project\plugins
 
-
-
 copy RegulusUnityKitLibrary\RegulusUnityKitLibrary\Regulus.Remoting.Unity\bin\Debug\RegulusLibrary.dll assets\regulus\plugins
 
 copy RegulusUnityKitLibrary\RegulusUnityKitLibrary\Regulus.Remoting.Unity\bin\Debug\Regulus.Protocol.dll assets\regulus\plugins 
@@ -30,6 +28,26 @@ copy RegulusUnityKitLibrary\Regulus\Library\Remoting\bin\Debug\RegulusRemoting.d
 
 
 copy RegulusUnityKitLibrary\Regulus\Library\PureLib\bin\Debug\RegulusLibrary.dll assets\regulus\plugins
+
+
+
+
+copy ChatSample\Server\Bin\Regulus.Project.Chat.Common.pdb assets\project\plugins
+
+copy RegulusUnityKitLibrary\RegulusUnityKitLibrary\Regulus.Remoting.Unity\bin\Debug\RegulusLibrary.pdb assets\regulus\plugins
+
+copy RegulusUnityKitLibrary\RegulusUnityKitLibrary\Regulus.Remoting.Unity\bin\Debug\Regulus.Protocol.pdb assets\regulus\plugins 
+copy RegulusUnityKitLibrary\RegulusUnityKitLibrary\Regulus.Remoting.Unity\bin\Debug\Regulus.Remoting.Unity.pdb assets\regulus\plugins
+
+copy RegulusUnityKitLibrary\Regulus\Library\Regulus.Serialization\bin\Debug\Regulus.Serialization.pdb assets\regulus\plugins
+
+copy RegulusUnityKitLibrary\Regulus\Library\\RegulusProtocol\bin\Debug\Regulus.Protocol.pdb assets\regulus\plugins
+
+copy RegulusUnityKitLibrary\Regulus\Library\RemotingNativeGhost\bin\Debug\RegulusRemotingGhostNative.pdb assets\regulus\plugins
+copy RegulusUnityKitLibrary\Regulus\Library\Remoting\bin\Debug\RegulusRemoting.pdb assets\regulus\plugins
+
+
+copy RegulusUnityKitLibrary\Regulus\Library\PureLib\bin\Debug\RegulusLibrary.pdb assets\regulus\plugins
 
 
 

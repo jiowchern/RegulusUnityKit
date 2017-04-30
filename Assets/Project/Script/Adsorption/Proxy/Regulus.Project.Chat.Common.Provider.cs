@@ -3,12 +3,12 @@
             using System.Collections.Generic;
             
             namespace Regulus.Project.Chat.Common{ 
-                public class ProtocolProvider : Regulus.Remoting.IProtocol
+                public class Provider : Regulus.Remoting.IProtocol
                 {
                     Regulus.Remoting.GPIProvider _GPIProvider;
                     Regulus.Remoting.EventProvider _EventProvider;
                     Regulus.Serialization.ISerializer _Serializer;
-                    public ProtocolProvider()
+                    public Provider()
                     {
                         var types = new Dictionary<Type, Type>();
                         types.Add(typeof(Regulus.Project.Chat.Common.IAccount) , typeof(Regulus.Project.Chat.Common.Ghost.CIAccount) );

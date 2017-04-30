@@ -10,7 +10,7 @@ public class Connecter : MonoBehaviour
 
     public UnityEngine.UI.Text IPAddress;
     public UnityEngine.UI.Text Port;
-    public Regulus.Project.Chat.Common.Adsorption.Agent Agent;
+    public Regulus.Project.Chat.Common.Agent Agent;
 	// Use this for initialization
 	void Start () {
 		

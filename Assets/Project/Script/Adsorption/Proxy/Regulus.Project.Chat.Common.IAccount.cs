@@ -46,17 +46,17 @@
                 {                    
 
                         
-                    var data = new Regulus.Remoting.PackageCallMethod();
-                    data.EntityId = _GhostIdName;
-                    data.MethodName ="Login";
+                    var packageCallMethod = new Regulus.Remoting.PackageCallMethod();
+                    packageCallMethod.EntityId = _GhostIdName;
+                    packageCallMethod.MethodName ="Login";
                     
                     var paramList = new System.Collections.Generic.List<byte[]>();
 
     var user_nameBytes = _Serializer.Serialize(user_name);  
     paramList.Add(user_nameBytes);
 
-data.MethodParams = paramList.ToArray();
-                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer(_Serializer));
+packageCallMethod.MethodParams = paramList.ToArray();
+                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , packageCallMethod.ToBuffer(_Serializer));
 
                     
                 }
